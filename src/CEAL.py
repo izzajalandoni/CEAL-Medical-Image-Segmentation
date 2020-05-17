@@ -14,10 +14,18 @@ labeled_index = np.arange(0, nb_labeled)
 unlabeled_index = np.arange(nb_labeled, len(X_train))
 
 # (1) Initialize model
+from unet import get_unet, unet
 model = get_unet(dropout=True)
-model.load_weights(initial_weights_path)
+# model.load_weights(initial_weights_path)
+
+# from deeplabv3 import Deeplabv3
+# from keras.optimizers import Adam
+# from unet import dice_coef, dice_coef_loss
+# model = Deeplabv3(input_shape=(224,224,1), classes=10, weights=None)
+# model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
 
 if initial_train:
+    print("INITIAL TRAINING")
     model_checkpoint = ModelCheckpoint(initial_weights_path, monitor='loss', save_best_only=True)
 
     if apply_augmentation:
@@ -34,6 +42,7 @@ if initial_train:
 
         log(history, 0, log_file)
 else:
+    print("NOT TRAINING!")
     model.load_weights(initial_weights_path)
 
 # Active loop

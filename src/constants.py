@@ -1,15 +1,15 @@
 # PATH definition
-global_path = "[global_path_name]"
+global_path = "./"
 initial_weights_path = "models/[initial_weights_name].hdf5"
 final_weights_path = "models/[output_weights_name].hdf5"
 
 # Data definition
-img_rows = 64 * 3
-img_cols = 80 * 3
+img_rows = 224#64 * 3
+img_cols = 224#80 * 3
 
-nb_total = 2000
-nb_train = 1600
-nb_labeled = 600
+nb_total = 5000#2000
+nb_train = 5000#1600
+nb_labeled = 2000#600
 nb_unlabeled = nb_train - nb_labeled
 
 # CEAL parameters

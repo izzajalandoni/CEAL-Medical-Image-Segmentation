@@ -10,6 +10,7 @@ from scipy.ndimage.morphology import distance_transform_edt as edt
 
 from constants import *
 from unet import get_unet
+from deeplab import Deeplabv3
 
 
 def range_transform(sample):
@@ -199,6 +200,11 @@ def compute_train_sets(X_train, y_train, labeled_index, unlabeled_index, weights
     modelPredictions = get_unet(dropout=False)
     modelPredictions.load_weights(weights)
 
+    # modelUncertain = Deeplabv3(input_shape=(1,224,224), classes=10)
+    # modelUncertain.load_weights(weights)
+    # modelPredictions = Deeplabv3(input_shape=(1,224,224), classes=10)
+    # modelPredictions.load_weights(weights)
+
     # predictions
     print("Computing log predictions ...\n")
     predictions = predict(X_train[unlabeled_index], modelPredictions)
@@ -212,7 +218,7 @@ def compute_train_sets(X_train, y_train, labeled_index, unlabeled_index, weights
         if index % 100 == 0:
             print("completed: " + str(index) + "/" + str(len(unlabeled_index)))
 
-        sample = X_train[unlabeled_index[index]].reshape([1, 1, img_rows, img_cols])
+        sample = X_train[unlabeled_index[index]].reshape([1, 3, img_rows, img_cols])
 
         sample_prediction = cv2.threshold(predictions[index], 0.5, 1, cv2.THRESH_BINARY)[1].astype('uint8')
 
@@ -244,7 +250,7 @@ def compute_train_sets(X_train, y_train, labeled_index, unlabeled_index, weights
         y_labeled_train = np.concatenate((y_train[labeled_index], predictions[pseudo_index]))
 
     else:
-        X_labeled_train = np.concatenate((X_train[labeled_index])).reshape([len(labeled_index), 1, img_rows, img_cols])
+        X_labeled_train = np.concatenate((X_train[labeled_index])).reshape([len(labeled_index), 3, img_rows, img_cols])
         y_labeled_train = np.concatenate((y_train[labeled_index])).reshape([len(labeled_index), 1, img_rows, img_cols])
 
     unlabeled_index = np.delete(unlabeled_index, oracle_index, 0)
